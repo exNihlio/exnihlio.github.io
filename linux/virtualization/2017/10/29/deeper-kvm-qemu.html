@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Deeper into KVM | Your awesome title</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Deeper into KVM" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Having covered the basics of standing up a simple VM, this guide will cover some of the more in depth aspects, quirks, and potential landmines that come from using KVM." />
+<meta property="og:description" content="Having covered the basics of standing up a simple VM, this guide will cover some of the more in depth aspects, quirks, and potential landmines that come from using KVM." />
+<link rel="canonical" href="/linux/virtualization/2017/10/29/deeper-kvm-qemu.html" />
+<meta property="og:url" content="/linux/virtualization/2017/10/29/deeper-kvm-qemu.html" />
+<meta property="og:site_name" content="Your awesome title" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-10-29T00:00:00-06:00" />
+<script type="application/ld+json">
+{"description":"Having covered the basics of standing up a simple VM, this guide will cover some of the more in depth aspects, quirks, and potential landmines that come from using KVM.","@type":"BlogPosting","url":"/linux/virtualization/2017/10/29/deeper-kvm-qemu.html","headline":"Deeper into KVM","dateModified":"2017-10-29T00:00:00-06:00","datePublished":"2017-10-29T00:00:00-06:00","mainEntityOfPage":{"@type":"WebPage","@id":"/linux/virtualization/2017/10/29/deeper-kvm-qemu.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Your awesome title" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Your awesome title</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Deeper into KVM</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2017-10-29T00:00:00-06:00" itemprop="datePublished">Oct 29, 2017
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>Having covered the basics of standing up a simple VM, this guide will cover some of the more in depth aspects, quirks, and potential landmines that come from using KVM.</p>
+
+<p>Part I: Disks</p>
+
+<p>Creating Disks:</p>
+
+<p>By default, when installing a VM and guest operating system, libvirt can automatically provision a disk, as demonstrated in the previous post. Libvirt can also use previously provisioned disks. qemu-img is the most commonly used utility for creating disks with KVM.</p>
+
+<p><code class="highlighter-rouge">qemu-img</code> is a highly flexible tool for creating virtual disks of varying types, most commonly qcow2 or raw images, but it also has support for several others including VMDK disks for VMWare and legacy qcow images.</p>
+
+<p>To create a virtual disk with qemu-img, invoke the following command:</p>
+
+<p><code class="highlighter-rouge">[user@localhost ~ ]$ qemu-img create -f qcow2 example_disk.qcow2 20G</code></p>
+
+<p>This creates a virtual disks with the name ‘example_disk’, formatted as a qcow2 image, of the size 20GB. If you examine the size of the file:</p>
+
+<p><code class="highlighter-rouge">[user@localhost ~ ]$ ls -alh example_disk.qcow2</code></p>
+
+<p>We get the following:</p>
+
+<p><code class="highlighter-rouge">-rw-r--r--. 1 root root 193K Oct 29 22:21 example_disk.qcow2</code></p>
+
+<p>Qcow2 disks are thin-provisioned by qemu-img . Essentially, the disk will expand as data is allocated to it (such as OS installation or file storage), until it occupies 20GB of actual space. This is useful in some cases, such as over-provisioning a physical disk.</p>
+
+<p>Be aware, if you attach this disk to a VM, it will not see the disk as 20GB in size. For storage virtual disks, it is frequently better to use raw formatting.</p>
+
+<p>The procedure to create a raw image is the same as above, simply sub out ‘qcow2 with ‘raw’.</p>
+
+<p>Raw disks have the advantage of greater simplicity and portability while qcow2 disks supported advanced features including encryption and snapshots.</p>
+
+<p>If you wish to use qcow2 formatted disk for a VM, it becomes necessary to pre-provision disk with qemu-img . Create your disk as specified above, then include the disk path as part of the –disk flag when installing with virt-install.
+Adding and Removing Disks:</p>
+
+<p>At some point, it will become necessary to add or remove storage from a virtual machine. Attaching and detaching disks is accomplished with the detach-disk and attach-disk utilities from virsh.</p>
+
+<p>To add a new virtual disk accomplish these steps:</p>
+
+<p>Create a new virtual disk, as described above.</p>
+
+<p>Execute the following command:</p>
+
+<p><code class="highlighter-rouge">[user@localhost ~ ]$ virsh attach-disk example_vm /path/to/disk/example_disk.img vdb --live --config</code></p>
+
+<p>This attaches the disk ‘example_disk.img’ to the VM ‘example_vm’ as the virtual device ‘vdb’. When listed with the lsblk command, there will now be two virtual disks: /dev/vda which the os was installed on and /dev/vdb . This disk can be treated exactly as any other type of directly attached storage; it can formatted, partitioned or added to a RAID group.</p>
+
+<p>There are several critical details to note here.</p>
+
+<p>First, always use the absolute path to the disk.</p>
+
+<p>Second, make sure that the target matches the target in the operating system. For example if you attached the disk as /dev/vdc but only on other virtual disk was attached in the OS, then the disk would still appear in the OS /dev/vdb. But the VM configuration would reflect /dev/vdc. This can make troubleshooting disk problems difficult.</p>
+
+<p>Third, note the flags used. <code class="highlighter-rouge">--live</code> immediately attaches the disk, <code class="highlighter-rouge">--config</code> makes adds the disk to VM XML configuration.</p>
+
+<p>Next, removing disks:</p>
+
+<p>Before removing a disk, accomplish these steps:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Ensure no critical applications are running, or services are accessing the disk.
+Dismount the disk: umount /path/to/disk
+Remove the disk entry from /etc/fstab or autofs. Rebooting with a dead entry to a disk can cause the OS to hang.
+</code></pre></div></div>
+
+<p>Detach the disk:</p>
+
+<p><code class="highlighter-rouge">[user@localhost ~ ]$ virsh detach-disk example_vm vdb --live --config</code></p>
+
+<p>This will immediately detach the disk and remove it from the VM XML config.</p>
+
+<p>Summary:</p>
+
+<p>Disks are created with qemu-img utility. Qcow2 disks are thin provisioned and have advanced features including snapshots, while raw disks are highly portable and simpler.  Attach disks with virsh attach-disks and detach disks with virsh detach-disks. Always ensure that the attached disk target matches the VM’s target.</p>
+
+  </div><a class="u-url" href="/linux/virtualization/2017/10/29/deeper-kvm-qemu.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Your awesome title</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Your awesome title</li><li><a class="u-email" href="mailto:your-email@example.com">your-email@example.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jekyll"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jekyll</span></a></li><li><a href="https://www.twitter.com/jekyllrb"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jekyllrb</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
