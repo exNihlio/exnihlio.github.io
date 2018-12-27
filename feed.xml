@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-12-27T11:50:13-07:00</updated><id>/feed.xml</id><title type="html">Burning Servers</title><subtitle>A blog about Linux, virtualization, coding and technology</subtitle><entry><title type="html">Deeper into KVM</title><link href="/linux/virtualization/2017/10/29/deeper-kvm-qemu.html" rel="alternate" type="text/html" title="Deeper into KVM" /><published>2017-10-29T00:00:00-06:00</published><updated>2017-10-29T00:00:00-06:00</updated><id>/linux/virtualization/2017/10/29/deeper-kvm-qemu</id><content type="html" xml:base="/linux/virtualization/2017/10/29/deeper-kvm-qemu.html">&lt;p&gt;Having covered the basics of standing up a simple VM, this guide will cover some of the more in depth aspects, quirks, and potential landmines that come from using KVM.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-12-27T12:06:55-07:00</updated><id>/feed.xml</id><title type="html">Burning Servers</title><subtitle>A blog about Linux, virtualization, coding and technology</subtitle><entry><title type="html">Deeper into KVM</title><link href="/linux/virtualization/2017/10/29/deeper-kvm-qemu.html" rel="alternate" type="text/html" title="Deeper into KVM" /><published>2017-10-29T00:00:00-06:00</published><updated>2017-10-29T00:00:00-06:00</updated><id>/linux/virtualization/2017/10/29/deeper-kvm-qemu</id><content type="html" xml:base="/linux/virtualization/2017/10/29/deeper-kvm-qemu.html">&lt;p&gt;Having covered the basics of standing up a simple VM, this guide will cover some of the more in depth aspects, quirks, and potential landmines that come from using KVM.&lt;/p&gt;
 
 &lt;p&gt;Part I: Disks&lt;/p&gt;
 
@@ -80,16 +80,7 @@ Remove the disk entry from /etc/fstab or autofs. Rebooting with a dead entry to 
 
 &lt;p&gt;The CPU also requires the Intel or AMD virtualization extensions, VT-d in the case of Intel CPUs or AMD-V for AMD CPUs. To see if your CPU is virtualization capable, run the following:&lt;/p&gt;
 
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;`[user@localhost - $]$ cat /proc/cpuinfo&lt;/td&gt;
-      &lt;td&gt;egrep “vmx&lt;/td&gt;
-      &lt;td&gt;svm&lt;/td&gt;
-      &lt;td&gt;lm”&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;[user@localhost - $]$ cat /proc/cpuinfo | egrep &quot;vmx|svm|lm&quot;&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;The lm value indicates that the CPU is virtualization capable. vmx are the Intel virtualization extensions and svm are the AMD virtualization extension.&lt;/p&gt;
 
