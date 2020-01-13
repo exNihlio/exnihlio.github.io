@@ -21,12 +21,12 @@
     </item>
     
     <item>
-      <title>Python3 Virtualenv</title>
+      <title>Configuring a Python3 virtual environment</title>
       <link>exnihlio.github.io/posts/python3-virtualenv/</link>
       <pubDate>Sun, 12 Jan 2020 13:21:47 -0700</pubDate>
       
       <guid>exnihlio.github.io/posts/python3-virtualenv/</guid>
-      <description>Creating a Python virtual environment </description>
+      <description>Overview Python is a fantastic programming language, with tools available for nearly any task. Unfortunately, its popularity can also be something of a drawback. The majority of Linux distros use Python extensively for system configuration and management. Modification of the system Python environment for developing software can cause system errors. Additionally, two or more different Python programs may have conflicting dependencies, making it difficult to work on multiple projects at the same time.</description>
     </item>
     
   </channel>
