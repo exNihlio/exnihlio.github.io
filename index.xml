@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Terminal</title>
+    <title>Delicious DevOps</title>
     <link>https://exnihlio.github.io/</link>
-    <description>Recent content on Terminal</description>
+    <description>Recent content on Delicious DevOps</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 12 Jan 2020 16:39:52 -0700</lastBuildDate>
@@ -27,6 +27,38 @@
       
       <guid>https://exnihlio.github.io/posts/python3-virtualenv/</guid>
       <description>Overview Python is a fantastic programming language, with tools available for nearly any task. Unfortunately, its popularity can also be something of a drawback. The majority of Linux distros use Python extensively for system configuration and management. Modification of the system Python environment for developing software can cause system errors. Additionally, two or more different Python programs may have conflicting dependencies, making it difficult to work on multiple projects at the same time.</description>
+    </item>
+    
+    <item>
+      <title>Deeper Into KVM</title>
+      <link>https://exnihlio.github.io/posts/deeper-into-kvm/</link>
+      <pubDate>Mon, 30 Oct 2017 10:19:59 -0700</pubDate>
+      
+      <guid>https://exnihlio.github.io/posts/deeper-into-kvm/</guid>
+      <description>Deeper into KVM/QEMU Having covered the basics of standing up a simple VM, this guide will cover some of the more in depth aspects, quirks, and potential landmines that come from using KVM.
+Part I: Disks Creating Disks: By default, when installing a VM and guest operating system, libvirt can automatically provision a disk, as demonstrated in the previous post. Libvirt can also use previously provisioned disks. qemu-img is the most commonly used utility for creating disks with KVM.</description>
+    </item>
+    
+    <item>
+      <title>Intro to KVM and libvirtd - Part 2</title>
+      <link>https://exnihlio.github.io/posts/intro-to-kvm-libvirtd_part_2/</link>
+      <pubDate>Fri, 27 Oct 2017 09:58:55 -0700</pubDate>
+      
+      <guid>https://exnihlio.github.io/posts/intro-to-kvm-libvirtd_part_2/</guid>
+      <description>Part II: Installing and Creating a VM 1. Installation: This guide assumes you are using RHEL or CentOS 7, though the packages are available for Debian, Arch and Ubuntu. Consult your systems package manager for usage.
+A 64bit CPU (AMD64) is generally required for a virtualization host, but this should only be a problem on very old CPUs.
+The CPU also requires the Intel or AMD virtualization extensions, VT-d in the case of Intel CPUs or AMD-V for AMD CPUs.</description>
+    </item>
+    
+    <item>
+      <title>Intro to KVM and libvirtd - Part 1</title>
+      <link>https://exnihlio.github.io/posts/intro-to-kvm-libvirt/</link>
+      <pubDate>Fri, 27 Oct 2017 09:41:44 -0700</pubDate>
+      
+      <guid>https://exnihlio.github.io/posts/intro-to-kvm-libvirt/</guid>
+      <description>KVM, Qemu and libvirt constitute a series of packages and a kernel module that enable a Linux host to act as a hypervisor, using the virtualization extensions in the x86 CPU architecture.
+KVM is the kernel module that exposes the /dev/kvm interface. This allows hardware level access for the VM (Virtual Machine), allowing the VM to run at much faster speeds versus software only emulation.
+QEMU is the userspace portion of the hypervisor; it presents virtual hardware to the VM which is in turn accelerated by the KVM module.</description>
     </item>
     
   </channel>

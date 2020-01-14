@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   
-    <title>Posts :: Terminal — A simple, retro theme for Hugo</title>
+    <title>Posts :: Delicious DevOps</title>
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -28,7 +28,7 @@
 
 
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Posts :: Terminal — A simple, retro theme for Hugo" />
+<meta name="twitter:title" content="Posts :: Delicious DevOps — " />
 <meta name="twitter:description" content="" />
 <meta name="twitter:site" content="https://exnihlio.github.io" />
 <meta name="twitter:creator" content="" />
@@ -37,7 +37,7 @@
 
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Posts :: Terminal — A simple, retro theme for Hugo">
+<meta property="og:title" content="Posts :: Delicious DevOps — ">
 <meta property="og:description" content="" />
 <meta property="og:url" content="https://exnihlio.github.io/posts/" />
 <meta property="og:site_name" content="Posts" />
@@ -49,7 +49,7 @@
 
 
 
-  <link href="/posts/index.xml" rel="alternate" type="application/rss+xml" title="Terminal" />
+  <link href="/posts/index.xml" rel="alternate" type="application/rss+xml" title="Delicious DevOps" />
 
 
 
@@ -70,7 +70,7 @@
     <div class="header__logo">
       <a href="/">
   <div class="logo">
-    Terminal
+    Delicious DevOps
   </div>
 </a>
 
@@ -152,6 +152,101 @@
     <div>
       <a class="read-more button"
         href="/posts/python3-virtualenv/">Read more →</a>
+    </div>
+    
+  </div>
+  
+  <div class="post on-list">
+    <h1 class="post-title">
+      <a href="https://exnihlio.github.io/posts/deeper-into-kvm/">Deeper Into KVM</a></h1>
+    <div class="post-meta">
+      <span class="post-date">
+        2017-10-30
+      </span>
+      
+    </div>
+
+    
+
+    
+
+    <div class="post-content">
+      
+      
+      Deeper into KVM/QEMU Having covered the basics of standing up a simple VM, this guide will cover some of the more in depth aspects, quirks, and potential landmines that come from using KVM.
+Part I: Disks Creating Disks: By default, when installing a VM and guest operating system, libvirt can automatically provision a disk, as demonstrated in the previous post. Libvirt can also use previously provisioned disks. qemu-img is the most commonly used utility for creating disks with KVM.
+      
+      
+    </div>
+
+    
+    <div>
+      <a class="read-more button"
+        href="/posts/deeper-into-kvm/">Read more →</a>
+    </div>
+    
+  </div>
+  
+  <div class="post on-list">
+    <h1 class="post-title">
+      <a href="https://exnihlio.github.io/posts/intro-to-kvm-libvirtd_part_2/">Intro to KVM and libvirtd - Part 2</a></h1>
+    <div class="post-meta">
+      <span class="post-date">
+        2017-10-27
+      </span>
+      
+    </div>
+
+    
+
+    
+
+    <div class="post-content">
+      
+      
+      Part II: Installing and Creating a VM 1. Installation: This guide assumes you are using RHEL or CentOS 7, though the packages are available for Debian, Arch and Ubuntu. Consult your systems package manager for usage.
+A 64bit CPU (AMD64) is generally required for a virtualization host, but this should only be a problem on very old CPUs.
+The CPU also requires the Intel or AMD virtualization extensions, VT-d in the case of Intel CPUs or AMD-V for AMD CPUs.
+      
+      
+    </div>
+
+    
+    <div>
+      <a class="read-more button"
+        href="/posts/intro-to-kvm-libvirtd_part_2/">Read more →</a>
+    </div>
+    
+  </div>
+  
+  <div class="post on-list">
+    <h1 class="post-title">
+      <a href="https://exnihlio.github.io/posts/intro-to-kvm-libvirt/">Intro to KVM and libvirtd - Part 1</a></h1>
+    <div class="post-meta">
+      <span class="post-date">
+        2017-10-27
+      </span>
+      
+    </div>
+
+    
+
+    
+
+    <div class="post-content">
+      
+      
+      KVM, Qemu and libvirt constitute a series of packages and a kernel module that enable a Linux host to act as a hypervisor, using the virtualization extensions in the x86 CPU architecture.
+KVM is the kernel module that exposes the /dev/kvm interface. This allows hardware level access for the VM (Virtual Machine), allowing the VM to run at much faster speeds versus software only emulation.
+QEMU is the userspace portion of the hypervisor; it presents virtual hardware to the VM which is in turn accelerated by the KVM module.
+      
+      
+    </div>
+
+    
+    <div>
+      <a class="read-more button"
+        href="/posts/intro-to-kvm-libvirt/">Read more →</a>
     </div>
     
   </div>

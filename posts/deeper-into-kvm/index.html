@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Deeper Into KVM :: Delicious DevOps</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Deeper into KVM/QEMU Having covered the basics of standing up a simple VM, this guide will cover some of the more in depth aspects, quirks, and potential landmines that come from using KVM.
+Part I: Disks Creating Disks: By default, when installing a VM and guest operating system, libvirt can automatically provision a disk, as demonstrated in the previous post. Libvirt can also use previously provisioned disks. qemu-img is the most commonly used utility for creating disks with KVM."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://exnihlio.github.io/posts/deeper-into-kvm/" />
+
+
+<link rel="stylesheet" href="https://exnihlio.github.io/assets/style.css">
+
+  <link rel="stylesheet" href="https://exnihlio.github.io/assets/blue.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://exnihlio.github.io/img/apple-touch-icon-144-precomposed.png">
+
+<link rel="shortcut icon" href="https://exnihlio.github.io/img/favicon/blue.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Deeper Into KVM :: Delicious DevOps — " />
+<meta name="twitter:description" content="Deeper into KVM/QEMU Having covered the basics of standing up a simple VM, this guide will cover some of the more in depth aspects, quirks, and potential landmines that come from using KVM.
+Part I: Disks Creating Disks: By default, when installing a VM and guest operating system, libvirt can automatically provision a disk, as demonstrated in the previous post. Libvirt can also use previously provisioned disks. qemu-img is the most commonly used utility for creating disks with KVM." />
+<meta name="twitter:site" content="https://exnihlio.github.io" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image" content="">
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Deeper Into KVM :: Delicious DevOps — ">
+<meta property="og:description" content="Deeper into KVM/QEMU Having covered the basics of standing up a simple VM, this guide will cover some of the more in depth aspects, quirks, and potential landmines that come from using KVM.
+Part I: Disks Creating Disks: By default, when installing a VM and guest operating system, libvirt can automatically provision a disk, as demonstrated in the previous post. Libvirt can also use previously provisioned disks. qemu-img is the most commonly used utility for creating disks with KVM." />
+<meta property="og:url" content="https://exnihlio.github.io/posts/deeper-into-kvm/" />
+<meta property="og:site_name" content="Deeper Into KVM" />
+<meta property="og:image" content="">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2017-10-30 10:19:59 -0700 -0700" />
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Delicious DevOps
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/resume">Resume</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/resume">Resume</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://exnihlio.github.io/posts/deeper-into-kvm/">Deeper Into KVM</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2017-10-30
+    </span>
+    
+    
+  </div>
+
+  
+
+  
+
+  <div class="post-content">
+    <h2 id="deeper-into-kvmqemu">Deeper into KVM/QEMU</h2>
+<p>Having covered the basics of standing up a simple VM,
+this guide will cover some of the more in depth aspects,
+quirks, and potential landmines that come from using KVM.</p>
+<h3 id="part-i-disks">Part I: Disks</h3>
+<h4 id="creating-disks">Creating Disks:</h4>
+<p>By default, when installing a VM and guest operating system,
+libvirt can automatically provision a disk, as demonstrated
+in the previous post. Libvirt can also use previously provisioned
+disks. qemu-img is the most commonly used utility for
+creating disks with KVM.</p>
+<p>qemu-img is a highly flexible tool for creating virtual disks of
+varying types, most commonly qcow2 or raw images, but it also has
+support for several others including VMDK disks for VMWare and
+legacy qcow images.</p>
+<p>To create a virtual disk with qemu-img, invoke the following command:</p>
+<p><code>qemu-img create -f qcow2 example_disk.qcow2 20G</code></p>
+<p>This creates a virtual disks with the name ‘example_disk’,
+formatted as a qcow2 image, of the size 20GB. If you examine the size of the file:</p>
+<p><code>ls -alh example_disk.qcow2</code></p>
+<p>We get the following:</p>
+<p><code>-rw-r--r--. 1 root root 193K Oct 29 22:21 example_disk.qcow2</code></p>
+<p>Qcow2 disks are thin-provisioned by qemu-img. Essentially, the
+disk will expand as data is allocated to it (such as OS installation or file storage),
+until it occupies 20GB of actual space. This is useful in some cases,
+such as over-provisioning a physical disk with virtual disks.</p>
+<p>Be aware, if you attach this disk to a VM, it will not see the
+disk as 20GB in size. For using virtual disks, the option <code>-o prealloc=falloc</code>
+will need to be used. This will use the <code>falloc</code> syscall and pre-provision the
+disk. The disk will not actually consume 20GB of space, but the VM will be
+aware of the disk total size.</p>
+<p>If you wish to use a qcow2 formatted disk for a VM, it becomes necessary
+to pre-provision disk with qemu-img. Create your disk as
+specified above, then include the disk path as part of the <code>--disk</code>
+flag when installing with <code>virt-install</code>.</p>
+<h4 id="adding-and-removing-disks">Adding and Removing Disks:</h4>
+<p>At some point, it will become necessary to add or remove storage from a virtual machine. Attaching and detaching disks is accomplished with the detach-disk and attach-disk utilities from virsh.</p>
+<p>To add a new virtual disk accomplish these steps:</p>
+<p>Create a new virtual disk, as described above.</p>
+<p>Execute the following command:</p>
+<p><code>virsh attach-disk example_vm /path/to/disk/example_disk.img vdb --live --config</code></p>
+<p>This attaches the disk ‘example_disk.img’ to the VM ‘example_vm’
+as the virtual device ‘vdb’. When listed with the lsblk command,
+there will now be two virtual disks: /dev/vda which the os was
+installed on and /dev/vdb . This disk can be treated exactly as
+any other type of directly attached storage; it can formatted,
+partitioned or added to a RAID group.</p>
+<p>There are several critical details to note here.</p>
+<p>First, always use the absolute path to the disk.</p>
+<p>Second, make sure that the target matches the target in the
+operating system. For example if you attached the disk as
+/dev/vdc but only on other virtual disk was attached in the OS,
+then the disk would still appear in the OS /dev/vdb.
+But the VM configuration would reflect /dev/vdc.
+This can make troubleshooting disk problems difficult.</p>
+<p>Third, note the flags used. <code>--live</code> immediately attaches the
+disk, <code>--config</code> makes adds the disk to VM XML configuration.</p>
+<p>Next, removing disks:</p>
+<p>Before removing a disk, accomplish these steps:</p>
+<p>Ensure no critical applications are running, or services are accessing the disk.</p>
+<p>Dismount the disk:</p>
+<p><code>umount /path/to/disk</code></p>
+<p>Remove the disk entry from /etc/fstab. Rebooting with a dead entry to a disk can cause the OS to hang.</p>
+<p>Detach the disk:</p>
+<p><code>virsh detach-disk example_vm vdb --live --config</code></p>
+<p>This will immediately detach the disk and remove it from the VM XML config.</p>
+<p>Summary:</p>
+<p>Disks are created with qemu-img utility. Qcow2 disks are thin provisioned
+and have advanced features including snapshots, while raw disks are highly portable and simpler.<br>
+Attach disks with <code>virsh attach-disk</code> and detach disks with <code>virsh detach-disk</code>.
+Always ensure that the attached disk target matches the VM’s target.</p>
+
+  </div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      <span class="button previous">
+        <a href="https://exnihlio.github.io/posts/python3-virtualenv/">
+          <span class="button__icon">←</span>
+          <span class="button__text">Configuring a Python3 virtual environment</span>
+        </a>
+      </span>
+      
+      
+      <span class="button next">
+        <a href="https://exnihlio.github.io/posts/intro-to-kvm-libvirtd_part_2/">
+          <span class="button__text">Intro to KVM and libvirtd - Part 2</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2020 Powered by <a href="http://gohugo.io">Hugo</a></span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://exnihlio.github.io/assets/main.js"></script>
+<script src="https://exnihlio.github.io/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
