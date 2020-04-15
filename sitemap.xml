@@ -3,38 +3,23 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://exnihlio.github.io/about/</loc>
-    <lastmod>2020-01-12T16:39:52-07:00</lastmod>
+    <loc>https://exnihlio.github.io/</loc>
+    <lastmod>2020-03-15T12:27:00-07:00</lastmod>
   </url>
   
   <url>
-    <loc>https://exnihlio.github.io/</loc>
-    <lastmod>2020-01-12T16:39:52-07:00</lastmod>
+    <loc>https://exnihlio.github.io/posts/hardening-openssh/</loc>
+    <lastmod>2020-03-15T12:27:00-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://exnihlio.github.io/posts/</loc>
+    <lastmod>2020-03-15T12:27:00-07:00</lastmod>
   </url>
   
   <url>
     <loc>https://exnihlio.github.io/posts/python3-virtualenv/</loc>
     <lastmod>2020-01-12T13:21:47-07:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://exnihlio.github.io/posts/</loc>
-    <lastmod>2020-01-12T13:21:47-07:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://exnihlio.github.io/posts/deeper-into-kvm/</loc>
-    <lastmod>2017-10-30T10:19:59-07:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://exnihlio.github.io/posts/intro-to-kvm-libvirtd_part_2/</loc>
-    <lastmod>2017-10-27T09:58:55-07:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://exnihlio.github.io/posts/intro-to-kvm-libvirt/</loc>
-    <lastmod>2017-10-27T09:41:44-07:00</lastmod>
   </url>
   
   <url>
