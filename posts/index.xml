@@ -32,7 +32,7 @@ Overview Hardening sshd consists of three main components:
       <pubDate>Sun, 15 Mar 2020 12:27:00 -0700</pubDate>
       
       <guid>https://exnihlio.github.io/posts/hardening-openssh/</guid>
-      <description>Overview Simple, secure and fast, OpenSSH is the de-facto remote access software in the UNIX world today. Out of the box the OpenSSH server (sshd), is reasonably secure, but as always, there are improvements that can be made. This guide will cover the basics and some more advanced features of hardening sshd. These steps are particular use for operating a bastion or jump host in the cloud or on-premises server.</description>
+      <description>Overview Simple, secure and fast, OpenSSH is the de-facto remote access software in the UNIX world today. Out of the box the OpenSSH server (sshd), is reasonably secure, but as always, there are improvements that can be made. This guide will cover the basics and some more advanced features of hardening sshd. These steps are of particular use for operating a bastion or jump host in the cloud or on-premises server.</description>
     </item>
     
     <item>
