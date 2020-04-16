@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Hardening OpenSSH - Part Two :: Delicious DevOps</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Part One previously covered here
+Overview Hardening sshd consists of three main components:
+  Using strong keys algorithms such ed25519 or minimum 4096 bit RSA keys.
+  Configuring sshd to disallow root login and only to use public keys for authentication
+  Removing the most common and lower level MACs and key types
+  Key Generation Keys for OpenSSH are generated with the ssh-keygen command. By default, this generates a 2048 bit RSA pub/priv keypair in ~/."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://exnihlio.github.io/posts/hardening-openssh_part_2/" />
+
+
+<link rel="stylesheet" href="https://exnihlio.github.io/assets/style.css">
+
+  <link rel="stylesheet" href="https://exnihlio.github.io/assets/blue.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://exnihlio.github.io/img/apple-touch-icon-144-precomposed.png">
+
+<link rel="shortcut icon" href="https://exnihlio.github.io/img/favicon/blue.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Hardening OpenSSH - Part Two :: Delicious DevOps — " />
+<meta name="twitter:description" content="Part One previously covered here
+Overview Hardening sshd consists of three main components:
+  Using strong keys algorithms such ed25519 or minimum 4096 bit RSA keys.
+  Configuring sshd to disallow root login and only to use public keys for authentication
+  Removing the most common and lower level MACs and key types
+  Key Generation Keys for OpenSSH are generated with the ssh-keygen command. By default, this generates a 2048 bit RSA pub/priv keypair in ~/." />
+<meta name="twitter:site" content="https://exnihlio.github.io" />
+<meta name="twitter:creator" content="Beamer" />
+<meta name="twitter:image" content="">
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Hardening OpenSSH - Part Two :: Delicious DevOps — ">
+<meta property="og:description" content="Part One previously covered here
+Overview Hardening sshd consists of three main components:
+  Using strong keys algorithms such ed25519 or minimum 4096 bit RSA keys.
+  Configuring sshd to disallow root login and only to use public keys for authentication
+  Removing the most common and lower level MACs and key types
+  Key Generation Keys for OpenSSH are generated with the ssh-keygen command. By default, this generates a 2048 bit RSA pub/priv keypair in ~/." />
+<meta property="og:url" content="https://exnihlio.github.io/posts/hardening-openssh_part_2/" />
+<meta property="og:site_name" content="Hardening OpenSSH - Part Two" />
+<meta property="og:image" content="">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2020-04-15 12:27:00 -0700 -0700" />
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Delicious DevOps
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/resume">Resume</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/resume">Resume</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://exnihlio.github.io/posts/hardening-openssh_part_2/">Hardening OpenSSH - Part Two</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2020-04-15
+    </span>
+    
+    
+    <span class="post-author">::
+      Beamer
+    </span>
+    
+  </div>
+
+  
+
+  
+
+  <div class="post-content">
+    <p>Part One previously covered <a href="https://exnihlio.github.io/posts/hardening-openssh/">here</a></p>
+<h2 id="overview">Overview</h2>
+<p>Hardening <code>sshd</code> consists of three main components:</p>
+<ol>
+<li>
+<p>Using strong keys algorithms such <code>ed25519</code> or minimum 4096 bit RSA keys.</p>
+</li>
+<li>
+<p>Configuring <code>sshd</code> to disallow root login and only to use public keys for
+authentication</p>
+</li>
+<li>
+<p>Removing the most common and lower level MACs and key types</p>
+</li>
+</ol>
+<h2 id="key-generation">Key Generation</h2>
+<p>Keys for OpenSSH are generated with the <code>ssh-keygen</code> command. By default,
+this generates a 2048 bit RSA pub/priv keypair in <code>~/.ssh/</code>.</p>
+<p>To change the bit size of the keypair, use the <code>-b</code> flag:</p>
+<p><code>ssh-keygen -b</code></p>
+<p>While a 2096 bit key is considered &lsquo;secure&rsquo; at this time, there have been
+demonstrated attacks on weaker keys/exchange alogrithms. See <a href="https://en.wikipedia.org/wiki/Logjam_(computer_security)">Logjam</a>.
+To that end, this author recommends using 4096 bits at a minimum.</p>
+<p>Howerver, <code>ed25519</code> keys and elliptic curve cryptography is/are much stronger.
+In fact, the <code>ECDH</code> or Eliptic Curve Diffie-Hellman key exchange is recommended as mitigation
+to the Logjam attack. For a more in depth look at elliptic curve cryptography, this <a href="https://arstechnica.com/information-technology/2013/10/a-relatively-easy-to-understand-primer-on-elliptic-curve-cryptography/">article</a> is
+highly recommended.</p>
+<p>Side Note:</p>
+<p>If you work with legacy systems, particularly routers and switches, they may be running a much older version of
+OpenSSH. Some of these may only support a Diffie-Hellman key exchange bit value of 1024 or lower, specifically
+the <code>diffie-hellman-group1-sha1</code> algorithim. This will force an error when trying to connect with newer OpenSSH clients
+later than OpenSSH 6.8.</p>
+<p>To generate an <code>ed25519</code> key run:</p>
+<p><code>ssh-keygen -t ed25519</code></p>
+<p><code>ed25519</code> keys are a fixed key length, so the <code>-b</code> option will not work. Note that <code>ed25519</code> keys are
+not compatible with systems that are FIPS 140-2 or higher enabled, or with AWS CodeCommit. They <strong>will</strong> work with
+both GitHub and GitLab however. <code>ed25519</code> keys have been supported in OpenSSH since version 6.5 and as such any modern
+SSH client should support them.</p>
+<p>If you encounter a system that does not support <code>ed25519</code> key types you can specify an alternate key.
+In your <code>~/.ssh/config</code> add the following:</p>
+<pre><code>Host $LEGACY_SYSTEM
+  IdentityFile ~/.ssh/id_rsa
+
+</code></pre><p>Where <code>$LEGACY_SYSTEM</code> is the hostname or IP address of the of the host that does not support <code>ed25519</code> keys.</p>
+<h2 id="sshd-configuration">sshd Configuration</h2>
+<p>For the most part, OpenSSH has sane defaults out of the box. There are concessions in the name of ease
+ease of use however. First is that root login is permitted. As a high percentage of drive by attacks
+on SSH servers target the root account, any publicly available host is already vulnerable to compromise.</p>
+<p>Second, login via password is also permitted. As passwords are difficult to remember, prone to re-use, and
+accidental compromise they represent a significant security weakness.</p>
+<p>To this end make the following changes in <code>/etc/ssh/sshd_config</code>.
+First disable root login by changing the following line:</p>
+<p><code>PermitRootLogin yes</code></p>
+<p>to</p>
+<p><code>PermitRootLogin no</code></p>
+<p>and reload the <code>sshd</code> service:</p>
+<p><code># systemctl reload sshd</code></p>
+<p>Before removing password based logins, your SSH public key <strong>MUST</strong> be present in remote hosts <code>~/.ssh/authorized_keys</code>
+file. This file contains the public keys of all hosts that are allowed access.</p>
+<p>Consider the aforementioned scenario in part one. <code>developer-1</code> will copy their keys to <code>bastion-1</code> in the following
+manner:</p>
+<p><code>ssh-copy-id ~/.ssh/id_ed25519.pub developer-1@bastion-1</code></p>
+<p>Since password based logins are still allowed, <code>developer-1</code> is prompted for their password. When they enter it
+successfully, the public key is copied to their remote home directory on <code>bastion-1</code>. Now when they attempt to log
+in in the future, their local private key will be checked with their public key on the remote host. If they match,
+they will be allowed to log in. If they do not match, then <code>sshd</code> will fall back and request a password.</p>
+<p>If password authentication is disabled like so:</p>
+<p><code>PasswordAuthentication yes</code></p>
+<p>to</p>
+<p><code>PasswordAuthentication no</code></p>
+<p>and <code>sshd</code> is reloaded</p>
+<p><code># systemctl reload ssh</code></p>
+<p>When SSHing in again, there will be no password prompt. If your public key is not
+in place on the remote system then the login is rejected.</p>
+<p>Public key authentication is inherently more secure than passwords, though placing public keys can also be a bit
+of a challenge. Tools like cloud-init, Ansible and SaltStack can also help with this, though discussion of these
+is beyond the scope of this post.</p>
+<p>The second challenge is that when SSHing through a jump host, authenticating to further systems can be difficult.
+Naturally, storing your keys on every system is unsafe. This is where <code>ssh-agent</code> forwarding can be extremely helpful.</p>
+<p><code>ssh-agent</code> forwarding adds your private key(s) to a local process. When you SSH to a remote system, adding the
+<code>-A</code> flag the <code>ssh</code> command instructs the <code>ssh-agent</code> to forward the keys to the <code>ssh-agent</code> on the remote host.
+These temporarily stored keys can then be used to authenticate to other hosts, without storing them on the system.
+Whey you log out of the remote system, the keys are removed from the agent.</p>
+<p>To add a key to your agent run the following:</p>
+<p><code>ssh-add ~/.ssh/id_ed25519</code></p>
+<p>To check the keys in your agent run the following:</p>
+<p><code>ssh-add -L</code></p>
+<p><code>ssh-agent</code> forwarding should only be done on systems you trust. A user with elevated rights can read the keys
+out of the agent socket. Regardless, this is still a safer pattern that storing keys remotely or using passwords.</p>
+<p>Part three of this guide will focus on reducing drive by login attempts and only allowing a few, highly secure key types
+and MAC algorithms.</p>
+
+  </div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      
+      <span class="button next">
+        <a href="https://exnihlio.github.io/posts/hardening-openssh/">
+          <span class="button__text">Hardening OpenSSH - Part One</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>Attribution 4.0 International (CC BY 4.0)</span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://exnihlio.github.io/assets/main.js"></script>
+<script src="https://exnihlio.github.io/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
