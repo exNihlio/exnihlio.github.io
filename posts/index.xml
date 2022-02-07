@@ -7,13 +7,33 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Attribution 4.0 International (CC BY 4.0)</copyright>
-    <lastBuildDate>Wed, 15 Apr 2020 12:27:00 -0700</lastBuildDate><atom:link href="https://exnihlio.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 07 Feb 2022 11:55:55 -0700</lastBuildDate><atom:link href="https://exnihlio.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Unifying My Dev Setup: Part 2</title>
+      <link>https://exnihlio.github.io/posts/00008.unifying.dev.setup.part.2/</link>
+      <pubDate>Mon, 07 Feb 2022 11:55:55 -0700</pubDate>
+      
+      <guid>https://exnihlio.github.io/posts/00008.unifying.dev.setup.part.2/</guid>
+      <description>A follow up my previous post about updating my dev environmet.
+In the end, I switched to Alacritty. Honestly setting it up was a bit of a pain, and is it really worth it? No idea. But I like the lack of tabs, which more or less forces me to use tmux, as I previously mentioned. And I have an automated build process with Docker configured that I&amp;rsquo;ll put up on GitHub sometime.</description>
+    </item>
+    
+    <item>
+      <title>Unifying My Dev Setup</title>
+      <link>https://exnihlio.github.io/posts/00007.unifying.dev.setup/</link>
+      <pubDate>Sun, 30 Jan 2022 11:47:45 -0700</pubDate>
+      
+      <guid>https://exnihlio.github.io/posts/00007.unifying.dev.setup/</guid>
+      <description>I have been using VS Code pretty much exclusively for about two years now. But I have decided to switch back to Vim + tmux. To that end, I want to unify my experience across systems, as I use Ubuntu on my desktop and a Macbook.
+My dotfiles, e.g. .vimrc, .bash*, .tmux.conf are all managed in git and installed with a shell script. But I want to go further. I want a script that will install my typeface(s) of choice, set up my vim plugins and configure my terminal so that anytime I get a new system, I can just run bash install.</description>
+    </item>
+    
     <item>
       <title>Hardening OpenSSH - Part Two</title>
-      <link>https://exnihlio.github.io/posts/hardening-openssh_part_2/</link>
+      <link>https://exnihlio.github.io/posts/00006.hardening.openssh.part.2/</link>
       <pubDate>Wed, 15 Apr 2020 12:27:00 -0700</pubDate>
       
-      <guid>https://exnihlio.github.io/posts/hardening-openssh_part_2/</guid>
+      <guid>https://exnihlio.github.io/posts/00006.hardening.openssh.part.2/</guid>
       <description>Part One previously covered here
 Overview Hardening sshd consists of three main components:
   Using strong keys algorithms such ed25519 or minimum 4096 bit RSA keys.
@@ -24,38 +44,38 @@ Overview Hardening sshd consists of three main components:
     
     <item>
       <title>Hardening OpenSSH - Part One</title>
-      <link>https://exnihlio.github.io/posts/hardening-openssh/</link>
+      <link>https://exnihlio.github.io/posts/00005.hardening.openssh/</link>
       <pubDate>Sun, 15 Mar 2020 12:27:00 -0700</pubDate>
       
-      <guid>https://exnihlio.github.io/posts/hardening-openssh/</guid>
+      <guid>https://exnihlio.github.io/posts/00005.hardening.openssh/</guid>
       <description>Overview Simple, secure and fast, OpenSSH is the de-facto remote access software in the UNIX world today. Out of the box the OpenSSH server (sshd), is reasonably secure, but as always, there are improvements that can be made. This guide will cover the basics and some more advanced features of hardening sshd. These steps are of particular use for operating a bastion or jump host in the cloud or on-premises server.</description>
     </item>
     
     <item>
       <title>Configuring a Python3 virtual environment</title>
-      <link>https://exnihlio.github.io/posts/python3-virtualenv/</link>
+      <link>https://exnihlio.github.io/posts/00004.python3.virtualenv/</link>
       <pubDate>Sun, 12 Jan 2020 13:21:47 -0700</pubDate>
       
-      <guid>https://exnihlio.github.io/posts/python3-virtualenv/</guid>
+      <guid>https://exnihlio.github.io/posts/00004.python3.virtualenv/</guid>
       <description>Overview Python is a fantastic programming language, with tools available for nearly any task. Unfortunately, its popularity can also be something of a drawback. The majority of Linux distros use Python extensively for system configuration and management. Modification of the system Python environment for developing software can cause system errors. Additionally, two or more different Python programs may have conflicting dependencies, making it difficult to work on multiple projects at the same time.</description>
     </item>
     
     <item>
       <title>Deeper Into KVM</title>
-      <link>https://exnihlio.github.io/posts/deeper-into-kvm/</link>
+      <link>https://exnihlio.github.io/posts/00003.deeper.into.kvm/</link>
       <pubDate>Mon, 30 Oct 2017 10:19:59 -0700</pubDate>
       
-      <guid>https://exnihlio.github.io/posts/deeper-into-kvm/</guid>
+      <guid>https://exnihlio.github.io/posts/00003.deeper.into.kvm/</guid>
       <description>Deeper into KVM/QEMU Having covered the basics of standing up a simple VM, this guide will cover some of the more in depth aspects, quirks, and potential landmines that come from using KVM.
 Part I: Disks Creating Disks: By default, when installing a VM and guest operating system, libvirt can automatically provision a disk, as demonstrated in the previous post. Libvirt can also use previously provisioned disks. qemu-img is the most commonly used utility for creating disks with KVM.</description>
     </item>
     
     <item>
       <title>Intro to KVM and libvirtd - Part 2</title>
-      <link>https://exnihlio.github.io/posts/intro-to-kvm-libvirtd_part_2/</link>
+      <link>https://exnihlio.github.io/posts/00002.intro.to.kvm-libvirt.part.2/</link>
       <pubDate>Fri, 27 Oct 2017 09:58:55 -0700</pubDate>
       
-      <guid>https://exnihlio.github.io/posts/intro-to-kvm-libvirtd_part_2/</guid>
+      <guid>https://exnihlio.github.io/posts/00002.intro.to.kvm-libvirt.part.2/</guid>
       <description>Part II: Installing and Creating a VM 1. Installation: This guide assumes you are using RHEL or CentOS 7, though the packages are available for Debian, Arch and Ubuntu. Consult your systems package manager for usage.
 A 64bit CPU (AMD64) is generally required for a virtualization host, but this should only be a problem on very old CPUs.
 The CPU also requires the Intel or AMD virtualization extensions, VT-d in the case of Intel CPUs or AMD-V for AMD CPUs.</description>
@@ -63,10 +83,10 @@ The CPU also requires the Intel or AMD virtualization extensions, VT-d in the ca
     
     <item>
       <title>Intro to KVM and libvirtd - Part 1</title>
-      <link>https://exnihlio.github.io/posts/intro-to-kvm-libvirt/</link>
+      <link>https://exnihlio.github.io/posts/00001.intro-to-kvm-libvirt/</link>
       <pubDate>Fri, 27 Oct 2017 09:41:44 -0700</pubDate>
       
-      <guid>https://exnihlio.github.io/posts/intro-to-kvm-libvirt/</guid>
+      <guid>https://exnihlio.github.io/posts/00001.intro-to-kvm-libvirt/</guid>
       <description>KVM, Qemu and libvirt constitute a series of packages and a kernel module that enable a Linux host to act as a hypervisor, using the virtualization extensions in the x86 CPU architecture.
 KVM is the kernel module that exposes the /dev/kvm interface. This allows hardware level access for the VM (Virtual Machine), allowing the VM to run at much faster speeds versus software only emulation.
 QEMU is the userspace portion of the hypervisor; it presents virtual hardware to the VM which is in turn accelerated by the KVM module.</description>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Intro to KVM and libvirtd - Part 2 :: Delicious DevOps</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Part II: Installing and Creating a VM 1. Installation: This guide assumes you are using RHEL or CentOS 7, though the packages are available for Debian, Arch and Ubuntu. Consult your systems package manager for usage.
+A 64bit CPU (AMD64) is generally required for a virtualization host, but this should only be a problem on very old CPUs.
+The CPU also requires the Intel or AMD virtualization extensions, VT-d in the case of Intel CPUs or AMD-V for AMD CPUs."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://exnihlio.github.io/posts/00002.intro.to.kvm-libvirt.part.2/" />
+
+
+<link rel="stylesheet" href="https://exnihlio.github.io/assets/style.css">
+
+  <link rel="stylesheet" href="https://exnihlio.github.io/assets/blue.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://exnihlio.github.io/img/apple-touch-icon-144-precomposed.png">
+
+<link rel="shortcut icon" href="https://exnihlio.github.io/img/favicon/blue.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Intro to KVM and libvirtd - Part 2 :: Delicious DevOps — " />
+<meta name="twitter:description" content="Part II: Installing and Creating a VM 1. Installation: This guide assumes you are using RHEL or CentOS 7, though the packages are available for Debian, Arch and Ubuntu. Consult your systems package manager for usage.
+A 64bit CPU (AMD64) is generally required for a virtualization host, but this should only be a problem on very old CPUs.
+The CPU also requires the Intel or AMD virtualization extensions, VT-d in the case of Intel CPUs or AMD-V for AMD CPUs." />
+<meta name="twitter:site" content="https://exnihlio.github.io" />
+<meta name="twitter:creator" content="exNihlio" />
+<meta name="twitter:image" content="">
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Intro to KVM and libvirtd - Part 2 :: Delicious DevOps — ">
+<meta property="og:description" content="Part II: Installing and Creating a VM 1. Installation: This guide assumes you are using RHEL or CentOS 7, though the packages are available for Debian, Arch and Ubuntu. Consult your systems package manager for usage.
+A 64bit CPU (AMD64) is generally required for a virtualization host, but this should only be a problem on very old CPUs.
+The CPU also requires the Intel or AMD virtualization extensions, VT-d in the case of Intel CPUs or AMD-V for AMD CPUs." />
+<meta property="og:url" content="https://exnihlio.github.io/posts/00002.intro.to.kvm-libvirt.part.2/" />
+<meta property="og:site_name" content="Intro to KVM and libvirtd - Part 2" />
+<meta property="og:image" content="">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2017-10-27 09:58:55 -0700 -0700" />
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Delicious DevOps
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/resume">Resume</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/resume">Resume</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://exnihlio.github.io/posts/00002.intro.to.kvm-libvirt.part.2/">Intro to KVM and libvirtd - Part 2</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2017-10-27
+    </span>
+    
+    
+    <span class="post-author">::
+      exNihlio
+    </span>
+    
+  </div>
+
+  
+
+  
+
+  <div class="post-content">
+    <h2 id="part-ii-installing-and-creating-a-vm">Part II: Installing and Creating a VM</h2>
+<h3 id="1-installation">1. Installation:</h3>
+<p>This guide assumes you are using RHEL or CentOS 7,
+though the packages are available for Debian, Arch
+and Ubuntu. Consult your systems package manager for usage.</p>
+<p>A 64bit CPU (AMD64) is generally required for a virtualization
+host, but this should only be a problem on very old CPUs.</p>
+<p>The CPU also requires the Intel or AMD virtualization extensions,
+VT-d in the case of Intel CPUs or AMD-V for AMD CPUs.
+To see if your CPU is virtualization capable, run the following:</p>
+<p><code>cat /proc/cpuinfo | egrep &quot;vmx|svm|lm&quot;</code></p>
+<p>The <code>lm</code> value indicates that the CPU is virtualization capable.
+<code>vmx</code> are the Intel virtualization extensions and <code>svm</code> are
+the AMD virtualization extension.</p>
+<p>If your system returns <code>vmx</code> or <code>svm</code>, and <code>lm</code> your system is
+ready to be a virtualization host.</p>
+<p>Make sure you have enabled virtualization inside the BIOS/UEFI as well.
+This is usually under advanced options. Check your motherboard documentation.</p>
+<p>You will need the following packages installed, as well as their dependencies:</p>
+<p><code>libvirt qemu-img qemu-kvm virt-install virt-manager virt-viewer</code></p>
+<p>Run the following:</p>
+<p><code>[user@localhost ~ ]$ sudo yum -y install libvirt qemu-img qemu-kvm virsh virt-install virt-manager virt-viewer</code></p>
+<p>Start the libvirtd daemon:</p>
+<p><code>[user@localhost ~ ]$ sudo systemctl start libvirtd</code></p>
+<p>Enable the libvirtd daemon:</p>
+<p><code>[user@localhost ~ ]$ sudo systemctl enable libvirtd</code></p>
+<p>Verify that libvirtd is running:</p>
+<p><code>[user@localhost ~ ]$ systemctl status libvirtd</code></p>
+<p>You should see something similar to the following:</p>
+<pre><code>● libvirtd.service – Virtualization daemon
+Loaded: loaded (/usr/lib/systemd/system/libvirtd.service; enabled; vendor preset: enabled)
+Active: active (running) since Mon 2017-10-16 23:01:56 EDT; 1 weeks 3 days ago
+</code></pre><p>—</p>
+<p>You have now installed the required virtualization packages
+for creating and running a VM under KVM/QEMU.</p>
+<h3 id="2-creating-your-first-vm">2. Creating Your First VM</h3>
+<p>By default, most configurations, images, networks and
+file systems for KVM/QEMU are stored in the <code>/var/lib/libvirt</code>
+directory. These also have the necessary SELinux contexts
+to ensure proper functioning. This guide will assume use of
+these directories.</p>
+<p>Download and obtain a CentOS or Fedora image. Ubuntu is
+currently not recommended using this procedure; there
+exists a bug in libvirt that causes some errors in installation.</p>
+<h4 id="i-installation-within-bash">I. Installation within bash</h4>
+<p>As previously discussed, virt-install is the default
+command-line installation utility for libvirt.
+There are number of options, flags and functions, but only
+a few are required.</p>
+<p>To install a VM type the following:</p>
+<p><code>[user@localhost ~ ]$ sudo virt-install --name example_VM --vcpus 1 --memory 1024 --location /var/lib/libvirt/images/CentOS7.iso --disk path=/var/lib/libvirt/filesystems/example_VM.img,size=20 --network network=default</code></p>
+<p><code>--name</code> is self-explanatory. This is how the VM will be identified to the hypervisor.</p>
+<p><code>--vcpus</code> refers to the number of virtual CPU threads given to the
+VM. To simplify, one vcpu equals one physical core, except for
+hyper-threaded CPUs. A four core physical CPU has four
+virtual CPUs to offer. A four core physical CPU with
+hyper-threading has 8 virtual CPUs to offer.</p>
+<p><code>--memory</code> is how much RAM is provisioned for the machine.
+The VM will see itself as having 1GB of RAM available.</p>
+<p><code>--location</code> refers to the physical location of the installation
+medium. This does not necessarily have to be ISO. A web server,
+FTP, or NFS server is also a valid source as well. If for
+some reason you receive an error during installation, the
+&ndash;cdrom option can be used in place of &ndash;location. Just make
+sure to still provide the path to the ISO.</p>
+<p><code>--disk</code> describes the installation location of the VM. This will
+automatically create a virtual hard drive in the path listed, with a
+size of 20GB.</p>
+<p><code>--network</code> Networking in virtualized environments can quickly become
+complex and confusing. By default, libvirt creates a virtual switch/bridge
+for your VMs, both for you host to connect to them, and to give networking
+to the VM. The default network name is default and assigns IP addresses
+in the 192.168.122.0/24 subnet.</p>
+<p>Connections to and from your VM are automatically NATed through
+the hosts physical network adapter. By default, libvirt configures
+iptables to drop all incoming connections to your VMs through the
+NAT that were not previously established by the VM itself.</p>
+<p>After running the virt-install command, if everything went well,
+you should see something similar to the following:</p>
+<pre><code>Starting install...
+Retrieving file vmlinuz...
+Retrieving file initrd.img...
+</code></pre><p>The virt-viewer window should pop up and you will see your
+system begin to boot. At this point, the OS can be
+installed like any other bare-metal system.</p>
+
+  </div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      <span class="button previous">
+        <a href="https://exnihlio.github.io/posts/00003.deeper.into.kvm/">
+          <span class="button__icon">←</span>
+          <span class="button__text">Deeper Into KVM</span>
+        </a>
+      </span>
+      
+      
+      <span class="button next">
+        <a href="https://exnihlio.github.io/posts/00001.intro-to-kvm-libvirt/">
+          <span class="button__text">Intro to KVM and libvirtd - Part 1</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>Attribution 4.0 International (CC BY 4.0)</span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://exnihlio.github.io/assets/main.js"></script>
+<script src="https://exnihlio.github.io/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
