@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Re-re-re-building My Lab :: Delicious DevOps</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="Turns out that hacking on my terminal, text editor and tmux configuration was a dangerous thing, since now I am in the process of rebuilding my homelab, for something like the fourth or fifth time.
+A Bit of Background I&amp;rsquo;ve been an erstwhile homelabber for the past six years or so. This started when I was pivoting my career from electronics technician to sysadmin. My first &amp;ldquo;lab&amp;rdquo; was a simple Intel Skylake box, 16GB of DDR4, a small SSD and some spinning rust."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://exnihlio.github.io/posts/00009.redploying.my.lab/" />
+
+
+<link rel="stylesheet" href="https://exnihlio.github.io/assets/style.css">
+
+  <link rel="stylesheet" href="https://exnihlio.github.io/assets/blue.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://exnihlio.github.io/img/apple-touch-icon-144-precomposed.png">
+
+<link rel="shortcut icon" href="https://exnihlio.github.io/img/favicon/blue.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Re-re-re-building My Lab :: Delicious DevOps — " />
+<meta name="twitter:description" content="Turns out that hacking on my terminal, text editor and tmux configuration was a dangerous thing, since now I am in the process of rebuilding my homelab, for something like the fourth or fifth time.
+A Bit of Background I&amp;rsquo;ve been an erstwhile homelabber for the past six years or so. This started when I was pivoting my career from electronics technician to sysadmin. My first &amp;ldquo;lab&amp;rdquo; was a simple Intel Skylake box, 16GB of DDR4, a small SSD and some spinning rust." />
+<meta name="twitter:site" content="https://exnihlio.github.io" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image" content="">
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Re-re-re-building My Lab :: Delicious DevOps — ">
+<meta property="og:description" content="Turns out that hacking on my terminal, text editor and tmux configuration was a dangerous thing, since now I am in the process of rebuilding my homelab, for something like the fourth or fifth time.
+A Bit of Background I&amp;rsquo;ve been an erstwhile homelabber for the past six years or so. This started when I was pivoting my career from electronics technician to sysadmin. My first &amp;ldquo;lab&amp;rdquo; was a simple Intel Skylake box, 16GB of DDR4, a small SSD and some spinning rust." />
+<meta property="og:url" content="https://exnihlio.github.io/posts/00009.redploying.my.lab/" />
+<meta property="og:site_name" content="Re-re-re-building My Lab" />
+<meta property="og:image" content="">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2022-02-15 10:31:43 -0700 MST" />
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+
+
+<div class="container headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Delicious DevOps
+  </div>
+</a>
+
+    </div>
+    <div class="menu-trigger">menu</div>
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/resume">Resume</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/resume">Resume</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://exnihlio.github.io/posts/00009.redploying.my.lab/">Re-re-re-building My Lab</a></h1>
+  <div class="post-meta">
+      
+    <span class="post-date">
+      2022-02-15
+    </span>
+    
+    
+  </div>
+
+  
+
+  
+
+  <div class="post-content">
+    <p>Turns out that hacking on my terminal, text editor and tmux configuration was a dangerous
+thing, since now I am in the process of rebuilding my homelab, for something like the fourth or fifth
+time.</p>
+<h2 id="a-bit-of-background">A Bit of Background</h2>
+<p>I&rsquo;ve been an erstwhile homelabber for the past six years or so. This started when I was pivoting
+my career from electronics technician to sysadmin. My first &ldquo;lab&rdquo; was a simple Intel Skylake box, 16GB
+of DDR4, a small SSD and some spinning rust. Very basic, but I used KVM/QEMU and libvirt to spin
+up VMs and spent a lot of time prepping for the RHCSA. This proved to be prtty effective, since the
+RHCSA cert is very focused on manual tasks. So manually doing these tasks was how I did it; manually
+deploying VMs with <code>virt-install</code> and manually configuring services.</p>
+<p>After the RHCSA and starting a new job, I became increasingly focused on automation. Ansible became my
+tool of choice, and I was doing a lot of scripting with Python and Perl. At that point, I upgraded my
+lab, getting a Dell R510, stuffing it with some extra hard drives, NVME and networking. This
+expanded my resources, but my automation was still lacking. I had added some scripts for deploying
+virtual machines, but it was brittle and not really scalable. VMWare is just too cumbersome and
+obtuse, CloudStack and Open Nebula are promising, but it&rsquo;s a lot to set up and you turn into a
+sysadmin just to be able to run things. OpenStack is a whole different mess.</p>
+<p>Regardless, this process has persisted for a long time. My lab has always been chaotic. A while back I
+created a couple of Ansible playbooks for deploying machines, but again these were messy and brittle.
+Ansible doesn&rsquo;t really have direct hooks into libvirt and so the playbooks are non-idempotent.
+Theoretically you can just render XML files and define your VMs there but that is a path of utter pain
+there.</p>
+<p>SaltStack can do virtualization management as well, but the documentation was very lacking the last
+time I looked.</p>
+<p>I had considered just setting up K8s on baremetal, but it makes maintenance a challenge.</p>
+<p>So for the longest time, my lab has languished. Very much a &ldquo;cobbler&rsquo;s children have no shoes&rdquo;
+situation. And it is embarassing.</p>
+<h2 id="enter-ignite">Enter Ignite</h2>
+<p>About six months ago, I stumbled onto <a href="https://www.weave.works/blog/fire-up-your-vms-with-weave-ignite">Ignite</a>
+from WeaveWorks. This is absolutely one of the sexiest virtual machine tools I have played with.
+It is fast, very simple in terms of operation and functionality and you can just write a simple yaml
+file, put it in Git and have a new VM running. This is exactly what I need.</p>
+<h2 id="setting-it-up">Setting it up</h2>
+<p>The idea is to have KVM and Ignite be the virtualization layer for my lab. Ignite will run disposable
+VMs and I can run experiments there. Clean up is easy and it should integrate well
+existing source control.</p>
+<p>Before I can do any of this though, there&rsquo;s prep work. I want my lab to well managed this time. So I
+am deploying a number of supporting services to that end. First, I set up Hashicorp Vault for secrets
+management. No more messing Ansible Vault directly. Next was Portainer and Docker Registry for image
+management. Currently working on Minio for object storage and Gitea for source control. After this will
+come Jenkins, Atlantis, Prometheus and Grafana.</p>
+<p>All of these services are running on my NAS, separate from the lab hardware itself. In theory, nothing
+in my lab will manually deployed. VMs will run entirely in a GitOps fashion. Changes all go out through
+CI/CD.</p>
+<p>Since services in support of the lab are running on a single Docker host, I&rsquo;m using <code>docker-compose</code>
+to manage them. Ansible renders the <code>docker-compose.yml</code>; this is for injecting variables, secrets and
+managing variables. This is an ongoing process and I&rsquo;ll be adding more details as I proceed.</p>
+
+  </div>
+  
+  <div class="pagination">
+    <div class="pagination__title">
+      <span
+        class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      
+      
+      <span class="button next">
+        <a href="https://exnihlio.github.io/posts/00008.unifying.dev.setup.part.2/">
+          <span class="button__text">Unifying My Dev Setup: Part 2</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+      
+    </div>
+  </div>
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>Attribution 4.0 International (CC BY 4.0)</span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://exnihlio.github.io/assets/main.js"></script>
+<script src="https://exnihlio.github.io/assets/prism.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
